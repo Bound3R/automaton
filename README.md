@@ -23,7 +23,7 @@ The result is the first automaton.
 ## Quick Start
 
 ```bash
-git clone https://github.com/Conway-Research/automaton.git
+git clone https://github.com/Bound3R/automaton.git
 cd automaton
 npm install && npm run build
 node dist/index.js --run
@@ -37,6 +37,62 @@ curl -fsSL https://conway.tech/automaton.sh | sh
 ```
 
 Note: Conway Cloud, Domains, and Inference has seen immense demand. We are working on scaling & perfomance.
+
+## CasaOS / ZimaOS
+
+Automaton ships as a ready-to-run Docker app with a built-in **futuristic log viewer** (Tron-style UI) accessible from the browser.
+
+### Requirements
+- CasaOS or ZimaOS installed on your server/NAS
+- The Docker image is published to GHCR on every release tag
+
+### Install via CasaOS App Store (Custom Install)
+
+1. Open CasaOS → **App Store** → **Custom Install** (the `+` button)
+2. Paste the following URL and click **Import**:
+
+```
+https://raw.githubusercontent.com/Bound3R/automaton/main/docker-compose.yml
+```
+
+3. Fill in your environment variables in the UI:
+   - `OPENAI_API_KEY` — OpenAI key (optional, if using OpenAI inference)
+   - `OLLAMA_BASE_URL` — e.g. `http://host.docker.internal:11434` (optional, for local Ollama)
+   - `CONWAY_API_KEY` — auto-provisioned on first run if left empty
+4. Click **Install**
+
+CasaOS will pull `ghcr.io/Bound3R/automaton:latest` and start the container.
+
+### Web UI — Log Viewer
+
+Once running, open the app from your CasaOS dashboard or navigate directly to:
+
+```
+http://<your-server-ip>:3000
+```
+
+You'll see a live futuristic terminal interface streaming all agent logs in real time — color-coded by level, filterable, with auto-scroll and reconnection on network drops.
+
+| Level | Color |
+|-------|-------|
+| `debug` | Cyan |
+| `info` | Green |
+| `warn` | Yellow |
+| `error` | Red |
+| `fatal` | Magenta |
+
+### Data Persistence
+
+All agent data (wallet, config, database, git state) is stored in a named Docker volume mapped to `/app/data` inside the container. Your automaton's identity and history survive container restarts and updates.
+
+### Updating
+
+To update to the latest version, open the app in CasaOS and click **Update**, or run:
+
+```bash
+docker pull ghcr.io/Bound3R/automaton:latest
+docker compose -f /path/to/docker-compose.yml up -d
+```
 
 ## How It Works
 
