@@ -12,10 +12,9 @@ import fs from "fs";
 import path from "path";
 import type { WalletData } from "../types.js";
 
-const AUTOMATON_DIR = path.join(
-  process.env.HOME || "/root",
-  ".automaton",
-);
+const AUTOMATON_DIR =
+  process.env["AUTOMATON_DIR"] ??
+  path.join(process.env["HOME"] ?? "/root", ".automaton");
 const WALLET_FILE = path.join(AUTOMATON_DIR, "wallet.json");
 
 export function getAutomatonDir(): string {

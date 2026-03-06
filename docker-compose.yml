@@ -1,0 +1,59 @@
+services:
+  automaton:
+    image: ghcr.io/Bound3R/automaton:latest
+    container_name: automaton
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - automaton-data:/app/data
+    environment:
+      - PORT=3000
+      - AUTOMATON_DIR=/app/data
+      # Set your API keys here or pass them via CasaOS environment UI
+      - CONWAY_API_KEY=${CONWAY_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-}
+      - CONWAY_API_URL=${CONWAY_API_URL:-https://api.conway.tech}
+    x-casaos:
+      envs:
+        - container: PORT
+          description:
+            en_us: Web UI port
+        - container: CONWAY_API_KEY
+          description:
+            en_us: Conway API key (auto-provisioned on first run)
+        - container: OPENAI_API_KEY
+          description:
+            en_us: OpenAI API key (optional, for OpenAI inference)
+        - container: OLLAMA_BASE_URL
+          description:
+            en_us: Ollama base URL (optional, e.g. http://host.docker.internal:11434)
+        - container: CONWAY_API_URL
+          description:
+            en_us: Conway API URL
+      ports:
+        - container: "3000"
+          description:
+            en_us: Web UI (Futuristic log viewer)
+      volumes:
+        - container: /app/data
+          description:
+            en_us: Automaton data — wallet, config, database, state
+      icon: https://raw.githubusercontent.com/Conway-Research/automaton/main/assets/icon.png
+      title:
+        en_us: Conway Automaton
+      tagline:
+        en_us: Sovereign AI Agent Runtime
+      overview:
+        en_us: >
+          Conway Automaton is a self-improving, self-replicating, sovereign AI agent.
+          It earns its own existence through inference, on-chain transactions, and
+          autonomous task execution. Open the Web UI to monitor the live log stream.
+      category: AI
+      port_map: "3000"
+      index: /
+
+volumes:
+  automaton-data:
+    driver: local

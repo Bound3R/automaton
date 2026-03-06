@@ -30,6 +30,7 @@ import { createDefaultRules } from "./agent/policy-rules/index.js";
 import type { AutomatonIdentity, AgentState, Skill, SocialClientInterface } from "./types.js";
 import { DEFAULT_TREASURY_POLICY } from "./types.js";
 import { createLogger, setGlobalLogLevel } from "./observability/logger.js";
+import { startWebServer } from "./web/server.js";
 import { bootstrapTopup } from "./conway/topup.js";
 import { randomUUID } from "crypto";
 import { keccak256, toHex } from "viem";
@@ -171,6 +172,10 @@ Version:    ${config.version}
 // ─── Main Run ──────────────────────────────────────────────────
 
 async function run(): Promise<void> {
+  // Start the web UI server (log viewer) before anything else
+  const webPort = parseInt(process.env["PORT"] ?? "3000", 10);
+  startWebServer(webPort);
+
   logger.info(`[${new Date().toISOString()}] Conway Automaton v${VERSION} starting...`);
 
   // Load config — first run triggers interactive setup wizard
