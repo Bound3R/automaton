@@ -1,6 +1,6 @@
 services:
   automaton:
-    image: ghcr.io/Bound3R/automaton:latest
+    image: ghcr.io/bound3r/automaton:latest
     container_name: automaton
     restart: unless-stopped
     ports:

@@ -6,7 +6,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: Bound3R/automaton
+  IMAGE_NAME: bound3r/automaton
 
 jobs:
   docker:
