@@ -40,7 +40,7 @@ services:
         - container: /app/data
           description:
             en_us: Automaton data — wallet, config, database, state
-      icon: https://raw.githubusercontent.com/Conway-Research/automaton/main/assets/icon.png
+      icon: https://web4.ai/favicon.svg
       title:
         en_us: Conway Automaton
       tagline:
