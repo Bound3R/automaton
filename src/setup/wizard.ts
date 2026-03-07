@@ -21,6 +21,16 @@ import { detectEnvironment } from "./environment.js";
 import { generateSoulMd, installDefaultSkills } from "./defaults.js";
 
 export async function runSetupWizard(): Promise<AutomatonConfig> {
+  // ─── Headless / Docker mode ───────────────────────────────────
+  // If the required env vars are set, skip all interactive prompts.
+  const envName    = process.env["AUTOMATON_NAME"];
+  const envGenesis = process.env["AUTOMATON_GENESIS_PROMPT"];
+  const envCreator = process.env["AUTOMATON_CREATOR_ADDRESS"];
+
+  if (envName && envGenesis && envCreator) {
+    return runHeadlessSetup(envName, envGenesis, envCreator);
+  }
+
   showBanner();
 
   console.log(chalk.white("  First-run setup. Let's bring your automaton to life.\n"));
@@ -192,6 +202,61 @@ export async function runSetupWizard(): Promise<AutomatonConfig> {
 
   closePrompts();
 
+  return config;
+}
+
+async function runHeadlessSetup(
+  name: string,
+  genesisPrompt: string,
+  creatorAddress: string,
+): Promise<AutomatonConfig> {
+  process.stdout.write("[setup] Headless mode detected — skipping interactive wizard\n");
+
+  const { account } = await getWallet();
+
+  let apiKey = "";
+  try {
+    const result = await provision();
+    apiKey = result.apiKey;
+    process.stdout.write(`[setup] Conway API key provisioned: ${result.keyPrefix}...\n`);
+  } catch (err: any) {
+    process.stdout.write(`[setup] Auto-provision failed: ${err.message} — continuing without API key\n`);
+  }
+
+  const env = detectEnvironment();
+
+  const config = createConfig({
+    name,
+    genesisPrompt,
+    creatorAddress: creatorAddress as Address,
+    registeredWithConway: !!apiKey,
+    sandboxId: env.sandboxId,
+    walletAddress: account.address,
+    apiKey,
+    openaiApiKey:    process.env["OPENAI_API_KEY"]    || undefined,
+    anthropicApiKey: process.env["ANTHROPIC_API_KEY"] || undefined,
+    ollamaBaseUrl:   process.env["OLLAMA_BASE_URL"]   || undefined,
+    treasuryPolicy:  DEFAULT_TREASURY_POLICY,
+  });
+
+  saveConfig(config);
+  writeDefaultHeartbeatConfig();
+
+  const automatonDir = getAutomatonDir();
+  const constitutionSrc = path.join(process.cwd(), "constitution.md");
+  const constitutionDst = path.join(automatonDir, "constitution.md");
+  if (fs.existsSync(constitutionSrc)) {
+    fs.copyFileSync(constitutionSrc, constitutionDst);
+    fs.chmodSync(constitutionDst, 0o444);
+  }
+
+  const soulPath = path.join(automatonDir, "SOUL.md");
+  fs.writeFileSync(soulPath, generateSoulMd(name, account.address, creatorAddress, genesisPrompt), { mode: 0o600 });
+
+  const skillsDir = config.skillsDir || "~/.automaton/skills";
+  installDefaultSkills(skillsDir);
+
+  process.stdout.write(`[setup] Headless setup complete. Wallet: ${account.address}\n`);
   return config;
 }
 
