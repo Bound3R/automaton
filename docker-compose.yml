@@ -6,7 +6,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - automaton-data:/app/data
+      - /DATA/AppData/automaton:/app/data
     environment:
       - PORT=3000
       - AUTOMATON_DIR=/app/data
@@ -51,7 +51,7 @@ services:
       volumes:
         - container: /app/data
           description:
-            en_us: Automaton data — wallet, config, database, state
+            en_us: Automaton data — wallet, config, database, state (host: /DATA/AppData/automaton)
       icon: https://web4.ai/favicon.svg
       title:
         en_us: Conway Automaton
@@ -66,6 +66,4 @@ services:
       port_map: "3000"
       index: /
 
-volumes:
-  automaton-data:
-    driver: local
+
