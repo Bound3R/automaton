@@ -51,7 +51,7 @@ services:
       volumes:
         - container: /app/data
           description:
-            en_us: Automaton data — wallet, config, database, state (host: /DATA/AppData/automaton)
+            en_us: "Automaton data — wallet, config, database, state (host: /DATA/AppData/automaton)"
       icon: https://web4.ai/favicon.svg
       title:
         en_us: Conway Automaton
