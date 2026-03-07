@@ -10,6 +10,9 @@ services:
     environment:
       - PORT=3000
       - AUTOMATON_DIR=/app/data
+      - AUTOMATON_NAME=${AUTOMATON_NAME:-My Automaton}
+      - AUTOMATON_GENESIS_PROMPT=${AUTOMATON_GENESIS_PROMPT:-You are a sovereign AI agent. Explore, learn, and grow.}
+      - AUTOMATON_CREATOR_ADDRESS=${AUTOMATON_CREATOR_ADDRESS:-0x0000000000000000000000000000000000000000}
       # Set your API keys here or pass them via CasaOS environment UI
       - CONWAY_API_KEY=${CONWAY_API_KEY:-}
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
@@ -17,6 +20,15 @@ services:
       - CONWAY_API_URL=${CONWAY_API_URL:-https://api.conway.tech}
     x-casaos:
       envs:
+        - container: AUTOMATON_NAME
+          description:
+            en_us: Name of your automaton
+        - container: AUTOMATON_GENESIS_PROMPT
+          description:
+            en_us: Genesis prompt — the seed instruction for your automaton
+        - container: AUTOMATON_CREATOR_ADDRESS
+          description:
+            en_us: Your Ethereum wallet address (0x...) — the human creator/owner
         - container: PORT
           description:
             en_us: Web UI port
